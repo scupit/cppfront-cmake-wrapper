@@ -1,0 +1,11 @@
+@PACKAGE_INIT@
+
+include( "${CMAKE_CURRENT_LIST_DIR}/cppfrontTargets.cmake" )
+
+if( NOT TARGET cppfront::headers )
+  add_library( cppfront::headers ALIAS cppfront_headers )
+endif()
+
+if( NOT TARGET cppfront::compiler )
+  add_executable( cppfront::compiler ALIAS cppfront_compiler )
+endif()

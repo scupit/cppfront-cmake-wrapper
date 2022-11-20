@@ -5,12 +5,6 @@ project( cppfront-wrapper
   VERSION "0.0.1"
 )
 
-if( CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR )
-  set( CPPFRONT_INSTALL_DEFAULT_VALUE ON )
-else()
-  set( CPPFRONT_INSTALL_DEFAULT_VALUE ON )
-endif()
-
 option( EMBED_CPPFRONT "When ON, clones and builds cppfront. When OFF, searches for an existing cppfront installation using find_package." ON )
 option( CPPFRONT_INSTALL "Generates installation configuration when set to ON." ${PROJECT_IS_TOP_LEVEL} )
 option( CPPFRONT_BUILD_EXAMPLE "Builds the cppfront-wrapper example project." ${PROJECT_IS_TOP_LEVEL} )

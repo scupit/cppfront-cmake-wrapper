@@ -4,16 +4,41 @@ include( FetchContent )
 include( GNUInstallDirs )
 
 set( CPPFRONT_REVISION "main" CACHE STRING "The git branch, tag, or commit hash to be checked out after clone" )
+set( CPPFRONT_REPOSITORY "git@github.com:hsutter/cppfront.git" CACHE STRING "The cppfront repository URL to clone from" )
 
-FetchContent_Declare( cppfront
-  GIT_REPOSITORY "git@github.com:hsutter/cppfront.git"
+if( IN_GCMAKE_CONTEXT )
+  string( SHA1 repo_hash "${CPPFRONT_REPOSITORY}" )
+  string( MAKE_C_IDENTIFIER "${repo_hash}" repo_hash )
+  set( repo_destination_dir "${GCMAKE_DEP_CACHE_DIR}/cppfront_repo/git_repo/${repo_hash}" )
+
+  FetchContent_Declare( _cached_cppfront_repo
+    GIT_REPOSITORY "${CPPFRONT_REPOSITORY}"
+    GIT_TAG "${CPPFRONT_REVISION}"
+    GIT_PROGRESS ON
+    SOURCE_DIR "${repo_destination_dir}"
+  )
+
+  FetchContent_GetProperties( _cached_cppfront_repo )
+  if( _cached_cppfront_repo_POPULATED )
+    message( "Caching cppfront main repository..." )
+    FetchContent_Populate( _cached_cppfront_repo )
+  endif()
+
+  set( repo_cloning_from "${repo_destination_dir}" )
+else()
+  set( repo_cloning_from "${CPPFRONT_REPOSITORY}" )
+endif()
+
+FetchContent_Declare( cppfront_original_repo
+  GIT_REPOSITORY "${CPPFRONT_REPOSITORY}"
   GIT_TAG "${CPPFRONT_REVISION}"
-  SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dep/cppfront"
+  GIT_PROGRESS ON
+  SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dep/cppfront_original_repo"
 )
 
-FetchContent_GetProperties( cppfront )
+FetchContent_GetProperties( cppfront_original_repo )
 if( NOT cppfront_POPULATED )
-  FetchContent_Populate( cppfront )
+  FetchContent_Populate( cppfront_original_repo )
 
   if( NOT TARGET cppfront::artifacts )
     
@@ -22,8 +47,8 @@ if( NOT cppfront_POPULATED )
 
     target_include_directories( cppfront_artifacts
       INTERFACE
-        "$<BUILD_INTERFACE:${cppfront_SOURCE_DIR}/source>"
-        "$<BUILD_INTERFACE:${cppfront_SOURCE_DIR}/include>"
+        "$<BUILD_INTERFACE:${cppfront_original_repo_SOURCE_DIR}/source>"
+        "$<BUILD_INTERFACE:${cppfront_original_repo_SOURCE_DIR}/include>"
         "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
     )
 
@@ -43,7 +68,7 @@ if( NOT cppfront_POPULATED )
 
     target_sources( cppfront
       PRIVATE 
-        "${cppfront_SOURCE_DIR}/source/cppfront.cpp"
+        "${cppfront_original_repo_SOURCE_DIR}/source/cppfront.cpp"
     )
     
     # Inherits configuration required by cppfront::artifacts, such as C++20

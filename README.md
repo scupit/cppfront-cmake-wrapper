@@ -9,11 +9,15 @@ so that cppfront can be used out of the box.
 
 ``` sh
 git clone 'git@github.com:scupit/cppfront-cmake-wrapper.git'
+cd cppfront-cmake-wrapper
 cmake -B build/ # ... any other CMake options such as -G 'Ninja'
 cmake --build build/ --parallel
-# Or run in an Administrator prompt in Windows
-sudo cmake --install build/
+sudo cmake --install build/ # Or run in an Administrator prompt in Windows
 ```
+
+Side note: check out [gsudo](https://github.com/gerardog/gsudo) for a Windows version
+of the `sudo` command. It allows me to natively use `sudo` from PowerShell on Windows, so I don't
+have to run a whole separate shell instance as Administrator just to run the CMake install step.
 
 ### CMake Build Options
 

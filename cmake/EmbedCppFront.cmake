@@ -19,7 +19,7 @@ if( IN_GCMAKE_CONTEXT )
   )
 
   FetchContent_GetProperties( _cached_cppfront_repo )
-  if( _cached_cppfront_repo_POPULATED )
+  if( NOT _cached_cppfront_repo_POPULATED )
     message( "Caching cppfront main repository..." )
     FetchContent_Populate( _cached_cppfront_repo )
   endif()
@@ -30,7 +30,7 @@ else()
 endif()
 
 FetchContent_Declare( cppfront_original_repo
-  GIT_REPOSITORY "${CPPFRONT_REPOSITORY}"
+  GIT_REPOSITORY "${repo_cloning_from}"
   GIT_TAG "${CPPFRONT_REVISION}"
   GIT_PROGRESS ON
   SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dep/cppfront_original_repo"

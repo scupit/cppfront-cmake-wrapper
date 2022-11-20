@@ -4,9 +4,9 @@
 # 
 # Targets:
 #   - cppfront::compiler
-#   - cppfront::headers
+#   - cppfront::artifacts
 
-if( NOT TARGET cppfront::compiler AND NOT TARGET cppfront::headers ) # Begin guard
+if( NOT TARGET cppfront::compiler AND NOT TARGET cppfront::artifacts ) # Begin guard
 
 set( _cppfront_search )
 
@@ -22,7 +22,9 @@ set( _cppfront_x86 "(x86)" )
 set( _cppfront_main_search
   PATHS
     "$ENV{ProgramFiles}/cppfront"
+    "$ENV{ProgramFiles}/cppfront-wrapper"
     "$ENV{ProgramFiles${_cppfront_x86}}/cppfront"
+    "$ENV{ProgramFiles${_cppfront_x86}}/cppfront-wrapper"
 )
 unset( _cppfront_x86 )
 
@@ -63,15 +65,19 @@ if( NOT cppfront_FOUND )
     REQUIRED_VARS CPPFRONT_INCLUDE_DIR _cppfront_exe
   )
 
-  if( NOT TARGET cppfront::headers )
-    add_library( cppfront::headers INTERFACE IMPORTED )
+  if( NOT TARGET cppfront::artifacts )
+    add_library( cppfront::artifacts INTERFACE IMPORTED )
 
-    target_include_directories( cppfront::headers
+    target_include_directories( cppfront::artifacts
       INTERFACE "${CPPFRONT_INCLUDE_DIR}"
     )
 
-    target_compile_features( cppfront::headers
+    target_compile_features( cppfront::artifacts
       INTERFACE cxx_std_20
+    )
+
+    target_compile_options( cppfront::artifacts
+      INTERFACE "$<$<BOOL:${MSVC}>:/EHsc>"
     )
   endif()
 

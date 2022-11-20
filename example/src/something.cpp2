@@ -1,0 +1,3 @@
+#include "something.hpp"
+
+doubleInt: (i: int) -> int = i * 2;

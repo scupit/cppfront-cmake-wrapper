@@ -2,8 +2,8 @@
 
 include( "${CMAKE_CURRENT_LIST_DIR}/cppfrontTargets.cmake" )
 
-if( NOT TARGET cppfront::headers )
-  add_library( cppfront::headers ALIAS cppfront_headers )
+if( NOT TARGET cppfront::artifacts )
+  add_library( cppfront::artifacts ALIAS cppfront_artifacts )
 endif()
 
 if( NOT TARGET cppfront::compiler )

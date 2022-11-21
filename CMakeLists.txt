@@ -11,7 +11,7 @@ option( CPPFRONT_BUILD_EXAMPLE "Builds the cppfront-wrapper example project." ${
 
 if( NOT EMBED_CPPFRONT )
   list( APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" )
-  find_package( cppfront MODULE REQUIRED )
+  find_package( cppfront MODULE REQUIRED GLOBAL )
 else()
   get_property( usingMultiConfigGenerator GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG )
 

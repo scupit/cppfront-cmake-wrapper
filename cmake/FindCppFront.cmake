@@ -66,24 +66,27 @@ if( NOT cppfront_FOUND )
   )
 
   if( NOT TARGET cppfront::artifacts )
-    add_library( cppfront::artifacts INTERFACE IMPORTED )
+    add_library( cppfront_artifacts INTERFACE IMPORTED )
+    add_library( cppfront::artifacts ALIAS cppfront_artifacts )
 
-    target_include_directories( cppfront::artifacts
+    target_include_directories( cppfront_artifacts
       INTERFACE "${CPPFRONT_INCLUDE_DIR}"
     )
 
-    target_compile_features( cppfront::artifacts
+    target_compile_features( cppfront_artifacts
       INTERFACE cxx_std_20
     )
 
-    target_compile_options( cppfront::artifacts
+    target_compile_options( cppfront_artifacts
       INTERFACE "$<$<BOOL:${MSVC}>:/EHsc>"
     )
   endif()
 
   if( NOT TARGET cppfront::compiler )
-    add_executable( cppfront::compiler IMPORTED )
-    set_target_properties( cppfront::compiler
+    add_executable( cppfront_compiler IMPORTED )
+    add_executable( cppfront::compiler ALIAS cppfront_compiler )
+
+    set_target_properties( cppfront_compiler
       PROPERTIES
         IMPORTED_LOCATION "${_cppfront_exe}"
     )

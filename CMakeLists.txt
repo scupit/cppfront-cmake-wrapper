@@ -10,6 +10,7 @@ option( CPPFRONT_INSTALL "Generates installation configuration when set to ON." 
 option( CPPFRONT_BUILD_EXAMPLE "Builds the cppfront-wrapper example project." ${PROJECT_IS_TOP_LEVEL} )
 
 if( NOT EMBED_CPPFRONT )
+  list( APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake" )
   find_package( cppfront MODULE REQUIRED )
 else()
   get_property( usingMultiConfigGenerator GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG )

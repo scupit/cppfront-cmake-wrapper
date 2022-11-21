@@ -11,17 +11,19 @@ if( IN_GCMAKE_CONTEXT )
   string( MAKE_C_IDENTIFIER "${repo_hash}" repo_hash )
   set( repo_destination_dir "${GCMAKE_DEP_CACHE_DIR}/cppfront_repo/git_repo/${repo_hash}" )
 
-  FetchContent_Declare( _cached_cppfront_repo
-    GIT_REPOSITORY "${CPPFRONT_REPOSITORY}"
-    GIT_TAG "${CPPFRONT_REVISION}"
-    GIT_PROGRESS ON
-    SOURCE_DIR "${repo_destination_dir}"
-  )
+  if( NOT IS_DIRECTORY repo_destination_dir )
+    FetchContent_Declare( _cached_cppfront_repo
+      GIT_REPOSITORY "${CPPFRONT_REPOSITORY}"
+      GIT_TAG "${CPPFRONT_REVISION}"
+      GIT_PROGRESS ON
+      SOURCE_DIR "${repo_destination_dir}"
+    )
 
-  FetchContent_GetProperties( _cached_cppfront_repo )
-  if( NOT _cached_cppfront_repo_POPULATED )
-    message( "Caching cppfront main repository..." )
-    FetchContent_Populate( _cached_cppfront_repo )
+    FetchContent_GetProperties( _cached_cppfront_repo )
+    if( NOT _cached_cppfront_repo_POPULATED )
+      message( "Caching cppfront main repository..." )
+      FetchContent_Populate( _cached_cppfront_repo )
+    endif()
   endif()
 
   set( repo_cloning_from "${repo_destination_dir}" )

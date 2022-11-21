@@ -11,7 +11,7 @@ if( IN_GCMAKE_CONTEXT )
   string( MAKE_C_IDENTIFIER "${repo_hash}" repo_hash )
   set( repo_destination_dir "${GCMAKE_DEP_CACHE_DIR}/cppfront_repo/git_repo/${repo_hash}" )
 
-  if( NOT IS_DIRECTORY repo_destination_dir )
+  if( NOT IS_DIRECTORY "${repo_destination_dir}" )
     FetchContent_Declare( _cached_cppfront_repo
       GIT_REPOSITORY "${CPPFRONT_REPOSITORY}"
       GIT_TAG "${CPPFRONT_REVISION}"

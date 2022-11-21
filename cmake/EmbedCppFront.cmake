@@ -37,7 +37,7 @@ FetchContent_Declare( cppfront_original_repo
 )
 
 FetchContent_GetProperties( cppfront_original_repo )
-if( NOT cppfront_POPULATED )
+if( NOT cppfront_original_repo_POPULATED )
   FetchContent_Populate( cppfront_original_repo )
 
   if( NOT TARGET cppfront::artifacts )

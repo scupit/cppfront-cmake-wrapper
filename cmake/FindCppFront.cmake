@@ -8,6 +8,16 @@
 
 if( NOT TARGET cppfront::compiler AND NOT TARGET cppfront::artifacts ) # Begin guard
 
+if( CMAKE_CROSSCOMPILING )
+  # When cross compiling, we should be able to look for the include directory/headers
+  # on the system because cppfront only runs at build time anyways.
+  set( CMAKE_FIND_ROOT_PATH_MODE_INCLUDE NEVER )
+  
+  # Same as above. The compiler will always run on the host system, and generates platform-agnostic
+  # files. Cross-compilation shouldn't affect this.
+  set( CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER )
+endif()
+
 set( _cppfront_search )
 
 if( CPPFRONT_ROOT )

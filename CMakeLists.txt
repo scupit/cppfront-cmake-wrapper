@@ -1,4 +1,6 @@
-cmake_minimum_required( VERSION 3.23 )
+# 3.24 is required for GLOBAL find_package.
+# I'll have to test which early versions work when embedding it though.
+cmake_minimum_required( VERSION 3.24 )
 
 project( cppfront-wrapper
   LANGUAGES CXX

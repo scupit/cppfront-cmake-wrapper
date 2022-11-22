@@ -16,6 +16,7 @@ if( CMAKE_CROSSCOMPILING )
   # Same as above. The compiler will always run on the host system, and generates platform-agnostic
   # files. Cross-compilation shouldn't affect this.
   set( CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER )
+  set( CMAKE_FIND_ROOT_PATH_MODE_PACKAGE NEVER )
 endif()
 
 set( _cppfront_search )

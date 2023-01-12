@@ -16,9 +16,7 @@ if( NOT EMBED_CPPFRONT )
   find_package( cppfront MODULE REQUIRED GLOBAL )
 else()
   get_property( usingMultiConfigGenerator GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG )
-
-  set( ALL_BUILD_TYPES Release Debug MinSizeRel RelWithDebInfo )
-  set( VALID_BUILD_TYPES Release Debug )
+  set( VALID_BUILD_TYPES Release Debug MinSizeRel RelWithDebInfo )
 
   if( usingMultiConfigGenerator )
     set( CMAKE_CONFIGURATION_TYPES ${VALID_BUILD_TYPES} )
@@ -27,7 +25,7 @@ else()
 
     # Don't force-reset the build type if using already using a build type which may
     # be valid for other projects. 
-    if( NOT "${CMAKE_BUILD_TYPE}" IN_LIST ALL_BUILD_TYPES )
+    if( NOT "${CMAKE_BUILD_TYPE}" IN_LIST VALID_BUILD_TYPES )
       set( CMAKE_BUILD_TYPE "Release" CACHE STRING "Picks either Debug or Release configuration" FORCE )
     endif()
   endif()

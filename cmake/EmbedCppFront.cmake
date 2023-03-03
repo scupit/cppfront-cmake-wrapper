@@ -72,24 +72,30 @@ if( NOT cppfront_original_repo_POPULATED )
         "${cppfront_original_repo_SOURCE_DIR}/source/cppfront.cpp"
     )
 
+    # Only the cppfront compiler will use files in source/.
     target_include_directories( cppfront
       PRIVATE
         "$<BUILD_INTERFACE:${cppfront_original_repo_SOURCE_DIR}/source>"
     )
     
-    # Inherits configuration required by cppfront::artifacts, such as C++20
+    # Inherits configuration required by cppfront::artifacts, such as C++20 requirement
+    # and include directory for cpputil.h.
     target_link_libraries( cppfront PRIVATE cppfront::artifacts )
 
-    # The build instructions at
-    # https://github.com/hsutter/cppfront#how-do-i-build-cppfront
-    # specify this MSVC flag.
-    target_compile_options( cppfront
-      PRIVATE
-        "$<$<BOOL:${MSVC}>:/EHsc>"
-    )
+    if (MINGW)
+      message( WARNING "
+        As of commit 8dd89ec8c9cfe9633286b2768ad0404455e342c7 (https://github.com/hsutter/cppfront/commit/8dd89ec8c9cfe9633286b2768ad0404455e342c7),
+        the latest MinGW ld.exe (GNU binutils 2.40) distributed by msys2 fails to link cppfront.exe when
+        compiling with optimizations off (Debug mode). If you're building in Debug mode with MinGW g++,
+        you must use the `-fuse-ld=lld` flag to use LLVM's lld linker in place of ld (need to install Clang
+        first).
 
-    # MinGW ld.exe currently fails when building cppfront with optimizations turned off
-    # after commit
+        If using GCMake, set the CMake options -DGCMAKE_ADDITIONAL_COMPILER_FLAGS='fuse-ld=lld' and
+        -DGCMAKE_ADDITIONAL_LINK_TIME_FLAGS='-fuse-ld=lld'. Otherwise, set the CMake option
+        -DCPPFRONT_ADDITIONAL_COMPILER_FLAGS='-fuse-ld=lld'.
+      ")
+    endif()
+
     if (IN_GCMAKE_CONTEXT)
       initialize_build_config_vars()
       foreach( config_name IN ITEMS "Debug" "Release" "MinSizeRel" "RelWithDebInfo" )

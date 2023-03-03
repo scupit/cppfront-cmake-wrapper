@@ -49,7 +49,6 @@ if( NOT cppfront_original_repo_POPULATED )
 
     target_include_directories( cppfront_artifacts
       INTERFACE
-        "$<BUILD_INTERFACE:${cppfront_original_repo_SOURCE_DIR}/source>"
         "$<BUILD_INTERFACE:${cppfront_original_repo_SOURCE_DIR}/include>"
         "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
     )
@@ -72,6 +71,11 @@ if( NOT cppfront_original_repo_POPULATED )
       PRIVATE 
         "${cppfront_original_repo_SOURCE_DIR}/source/cppfront.cpp"
     )
+
+    target_include_directories( cppfront
+      PRIVATE
+        "$<BUILD_INTERFACE:${cppfront_original_repo_SOURCE_DIR}/source>"
+    )
     
     # Inherits configuration required by cppfront::artifacts, such as C++20
     target_link_libraries( cppfront PRIVATE cppfront::artifacts )
@@ -83,6 +87,20 @@ if( NOT cppfront_original_repo_POPULATED )
       PRIVATE
         "$<$<BOOL:${MSVC}>:/EHsc>"
     )
+
+    # MinGW ld.exe currently fails when building cppfront with optimizations turned off
+    # after commit
+    if (IN_GCMAKE_CONTEXT)
+      initialize_build_config_vars()
+      foreach( config_name IN ITEMS "DEBUG" "RELEASE" "MINSIZEREL" "RELWITHDEBINFO" )
+        target_compile_options( cppfront PRIVATE ${config_name}_LOCAL_COMPILER_FLAGS )
+        target_link_options( cppfront PRIVATE ${config_name}_LOCAL_LINK_FLAGS )
+      endforeach()
+    else()
+      set( CPPFRONT_ADDITIONAL_COMPILER_FLAGS "" CACHE STRING "Semicolon separated list of additional flags to use when building cppfront.")
+      target_compile_options( cppfront PRIVATE ${CPPFRONT_ADDITIONAL_COMPILER_FLAGS} )
+      target_link_options( cppfront PRIVATE ${CPPFRONT_ADDITIONAL_COMPILER_FLAGS} )
+    endif()
   endif()
 endif()
 

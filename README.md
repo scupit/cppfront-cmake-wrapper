@@ -5,6 +5,13 @@ This project wraps the [cppfront repository](https://github.com/hsutter/cppfront
 It also acts as a compatibility wrapper for my [gcmake-rust](https://github.com/scupit/gcmake-rust) tool,
 so that cppfront can be used out of the box.
 
+## Important Note
+
+As of commit [8dd89ec8c9cfe9633286b2768ad0404455e342c7](https://github.com/hsutter/cppfront/commit/8dd89ec8c9cfe9633286b2768ad0404455e342c7),
+the latest MinGW ld.exe (GNU binutils 2.40) distributed by msys2 fails to link cppfront.exe when
+compiling with optimizations off (Debug mode). If you're building in Debug mode with MinGW g++,
+you must use the `-fuse-ld=lld` flag to use LLVM's lld linker in place of ld. That works fine.
+
 ## Default Build and Install
 
 ``` sh

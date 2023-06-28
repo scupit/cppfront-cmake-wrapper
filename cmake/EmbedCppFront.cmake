@@ -14,7 +14,6 @@ if( IN_GCMAKE_CONTEXT )
     DOWNLOAD_ONLY TRUE
     GIT_REPOSITORY "${CPPFRONT_REPOSITORY}"
     GIT_TAG "${CPPFRONT_REVISION}"
-    SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dep/cppfront_original_repo"
   )
 else()
   FetchContent_Declare( cppfront_original_repo

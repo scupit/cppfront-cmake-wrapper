@@ -7,17 +7,15 @@ set( CPPFRONT_REVISION "main" CACHE STRING "The git branch, tag, or commit hash 
 set( CPPFRONT_REPOSITORY "git@github.com:hsutter/cppfront.git" CACHE STRING "The cppfront repository URL to clone from" )
 
 if( IN_GCMAKE_CONTEXT )
-  if( NOT cppfront_original_repo_ADDED )
-    message( "Downloading main cppfront repository..." )
+  message( "Downloading main cppfront repository..." )
 
-    CPMAddPackage(
-      NAME cppfront_original_repo
-      DOWNLOAD_ONLY TRUE
-      GIT_REPOSITORY "${CPPFRONT_REPOSITORY}"
-      GIT_TAG "${CPPFRONT_REVISION}"
-      SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dep/cppfront_original_repo"
-    )
-  endif()
+  CPMAddPackage(
+    NAME cppfront_original_repo
+    DOWNLOAD_ONLY TRUE
+    GIT_REPOSITORY "${CPPFRONT_REPOSITORY}"
+    GIT_TAG "${CPPFRONT_REVISION}"
+    SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dep/cppfront_original_repo"
+  )
 else()
   FetchContent_Declare( cppfront_original_repo
     GIT_REPOSITORY "${CPPFRONT_REPOSITORY}"

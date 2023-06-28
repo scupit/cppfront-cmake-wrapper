@@ -7,43 +7,34 @@ set( CPPFRONT_REVISION "main" CACHE STRING "The git branch, tag, or commit hash 
 set( CPPFRONT_REPOSITORY "git@github.com:hsutter/cppfront.git" CACHE STRING "The cppfront repository URL to clone from" )
 
 if( IN_GCMAKE_CONTEXT )
-  string( SHA1 repo_hash "${CPPFRONT_REPOSITORY}" )
-  string( MAKE_C_IDENTIFIER "${repo_hash}" repo_hash )
-  set( repo_destination_dir "${GCMAKE_DEP_CACHE_DIR}/cppfront_repo/git_repo/${repo_hash}" )
+  if( NOT cppfront_original_repo_ADDED )
+    message( "Downloading main cppfront repository..." )
 
-  if( NOT IS_DIRECTORY "${repo_destination_dir}" )
-    FetchContent_Declare( _cached_cppfront_repo
+    CPMAddPackage(
+      NAME cppfront_original_repo
+      DOWNLOAD_ONLY TRUE
       GIT_REPOSITORY "${CPPFRONT_REPOSITORY}"
       GIT_TAG "${CPPFRONT_REVISION}"
-      GIT_PROGRESS ON
-      SOURCE_DIR "${repo_destination_dir}"
+      SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dep/cppfront_original_repo"
     )
-
-    FetchContent_GetProperties( _cached_cppfront_repo )
-    if( NOT _cached_cppfront_repo_POPULATED )
-      message( "Caching cppfront main repository..." )
-      FetchContent_Populate( _cached_cppfront_repo )
-    endif()
   endif()
-
-  set( repo_cloning_from "${repo_destination_dir}" )
 else()
-  set( repo_cloning_from "${CPPFRONT_REPOSITORY}" )
+  FetchContent_Declare( cppfront_original_repo
+    GIT_REPOSITORY "${CPPFRONT_REPOSITORY}"
+    GIT_TAG "${CPPFRONT_REVISION}"
+    GIT_PROGRESS ON
+    SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dep/cppfront_original_repo"
+  )
+  FetchContent_GetProperties( cppfront_original_repo )
 endif()
 
-FetchContent_Declare( cppfront_original_repo
-  GIT_REPOSITORY "${repo_cloning_from}"
-  GIT_TAG "${CPPFRONT_REVISION}"
-  GIT_PROGRESS ON
-  SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/dep/cppfront_original_repo"
-)
-
-FetchContent_GetProperties( cppfront_original_repo )
-if( NOT cppfront_original_repo_POPULATED )
-  FetchContent_Populate( cppfront_original_repo )
+if( cppfront_original_repo_POPULATED OR cppfront_original_repo_ADDED )
+  # the <dep-name>_POPULATED variable is created by FetchContent.
+  if( cppfront_original_repo_POPULATED )
+    FetchContent_Populate( cppfront_original_repo )
+  endif()
 
   if( NOT TARGET cppfront::artifacts )
-    
     add_library( cppfront_artifacts INTERFACE )
     add_library( cppfront::artifacts ALIAS cppfront_artifacts )
 
@@ -81,20 +72,6 @@ if( NOT cppfront_original_repo_POPULATED )
     # Inherits configuration required by cppfront::artifacts, such as C++20 requirement
     # and include directory for cpputil.h.
     target_link_libraries( cppfront PRIVATE cppfront::artifacts )
-
-    if (MINGW)
-      message( WARNING "
-        As of commit 8dd89ec8c9cfe9633286b2768ad0404455e342c7 (https://github.com/hsutter/cppfront/commit/8dd89ec8c9cfe9633286b2768ad0404455e342c7),
-        the latest MinGW ld.exe (GNU binutils 2.40) distributed by msys2 fails to link cppfront.exe when
-        compiling with optimizations off (Debug mode). If you're building in Debug mode with MinGW g++,
-        you must use the `-fuse-ld=lld` flag to use LLVM's lld linker in place of ld (need to install Clang
-        first).
-
-        If using GCMake, set the CMake options -DGCMAKE_ADDITIONAL_COMPILER_FLAGS='fuse-ld=lld' and
-        -DGCMAKE_ADDITIONAL_LINK_TIME_FLAGS='-fuse-ld=lld'. Otherwise, set the CMake option
-        -DCPPFRONT_ADDITIONAL_COMPILER_FLAGS='-fuse-ld=lld'.
-      ")
-    endif()
 
     if (IN_GCMAKE_CONTEXT)
       initialize_build_config_vars()

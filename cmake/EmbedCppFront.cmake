@@ -25,7 +25,7 @@ else()
   FetchContent_MakeAvailable( cppfront_original_repo )
 endif()
 
-if( NOT cppfront_original_repo_POPULATED OR cppfront_original_repo_ADDED )
+if( NOT (cppfront_original_repo_POPULATED OR cppfront_original_repo_ADDED) )
   message( FATAL_ERROR "Populating actual cppfront repository failed. Are you disconnected from the internet?" )
 endif()
 
